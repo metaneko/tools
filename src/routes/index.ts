@@ -6,5 +6,4 @@ export const routes = [
     { path: "/cost", component: ProductCost },
     { path: "/cargo", component: CargoShipping },
     { path: "/single", component: ProductSingle },
-
 ]

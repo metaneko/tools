@@ -158,8 +158,8 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + express.v
             </el-row>
         </el-form-item>
         <el-divider />
-        <h3 @click="showDetail = !showDetail">建议零售价: {{ Math.round(totalCost * 1.4) }}, 最低价:
-            {{ Math.round(totalCost * 1.4 * 0.8)
+        <h3 @click="showDetail = !showDetail">建议零售价: {{ Math.round(totalCost / 0.6) }}, 最低价:
+            {{ Math.round(totalCost / 0.6 * 0.8)
             }}</h3>
         <div v-show="showDetail">铁艺 ({{ ironArtCost.toFixed(2) }}) + 烤漆({{ paintCost.toFixed(2) }}) +
             快递({{ express.recomand.name }}: {{ express.recomand.price }}) + 纸箱({{ cartonCost.toFixed(2) }}) + Logo({{

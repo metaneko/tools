@@ -50,8 +50,8 @@ function findMaterial(type: string, list: IronArtItem[]) {
 }
 
 // 烤漆
-const paintSelected = paintList.find((v) => v.id == form.paint)!;
-const paintCost = computed(() => paintSelected.price * totalWeight.value);
+const paintSelected = computed(() => paintList.find((v) => v.id == form.paint)!);
+const paintCost = computed(() => paintSelected.value.price * totalWeight.value);
 
 
 // 快递

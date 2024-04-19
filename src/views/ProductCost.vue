@@ -63,7 +63,7 @@ const showArea = computed(() => city.value != "");
 </script>
 
 <template>
-    <el-card style="max-width: 800px;">
+    <div class="product-cost">
         <div class="header">
             <span>请添加产品 ({{ tableData.length }})</span>
             <el-space warp>
@@ -82,12 +82,12 @@ const showArea = computed(() => city.value != "");
                                 @click.stop="deleteItem(index)"></el-link>
                         </div>
                     </template>
-                    <el-form label-width="auto" style="width: 600px;">
+                    <el-form label-width="auto" style="width: 100%">
                         <el-form-item label="产品款式">
                             <ImageSelect v-model="item.product" :images="productList" width="200px" height="80px" />
                         </el-form-item>
                         <el-form-item label="定制尺寸">
-                            <el-row :gutter="20" justify="space-between" style="width: 100%;">
+                            <el-row :gutter="20">
                                 <el-col :span="8">
                                     <InputNumberUnit v-model="item.length" placeholder="长" unit="CM" />
                                 </el-col>
@@ -133,43 +133,49 @@ const showArea = computed(() => city.value != "");
 
         <!-- 快递 -->
         <el-form-item label="发货地址">
-            <el-row :gutter="20" style="width: 100%;">
+            <el-row :gutter="20">
                 <el-col :span="8">
-                    <el-select v-model="province" placeholder="省份">
+                    <el-select v-model="province" placeholder="省份" style="max-width: 160px;">
                         <el-option v-for="c in pcaList" :label="c.name" :value="c.code"></el-option>
                     </el-select>
                 </el-col>
                 <el-col :span="8">
-                    <el-select v-model="city" placeholder="请选择">
+                    <el-select v-model="city" placeholder="请选择" style="max-width: 160px;">
                         <el-option v-for="c in cityList" :label="c.name" :value="c.code"></el-option>
                     </el-select>
                 </el-col>
                 <el-col :span="8">
-                    <el-select v-model="area" v-show="showArea" placeholder="请选择">
+                    <el-select v-model="area" v-show="showArea" placeholder="请选择" style="max-width: 160px;">
                         <el-option v-for="c in areaList" :label="c.name" :value="c.code"></el-option>
                     </el-select>
                 </el-col>
             </el-row>
         </el-form-item>
-    </el-card>
+    </div>
+
 </template>
 
 <style lang="scss" scoped>
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+.product-cost {
+    max-width: 720px;
+    margin: auto;
 
-.scrollbar {
-    margin: 12px 0;
-
-    .title {
-        width: 100vw;
-        margin-right: 20px;
+    .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .scrollbar {
+        margin: 12px 0;
+
+        .title {
+            width: 100vw;
+            margin-right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     }
 }
 </style>

@@ -72,19 +72,11 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + express.v
 </script>
 
 <template>
-    <el-form label-width="auto" style="width: 600px;">
+    <el-form class="product-single" label-width="auto" style="max-width: 720px;">
         <el-form-item label="定制尺寸">
-            <el-row :gutter="20" justify="space-between" style="width: 100%;">
-                <el-col :span="8">
-                    <InputNumberUnit v-model="form.length" placeholder="长" unit="CM" />
-                </el-col>
-                <el-col :span="8">
-                    <InputNumberUnit v-model="form.width" placeholder="宽" unit="CM" />
-                </el-col>
-                <el-col :span="8">
-                    <InputNumberUnit v-model="form.height" placeholder="高" unit="CM" />
-                </el-col>
-            </el-row>
+            <InputNumberUnit v-model="form.length" placeholder="长" unit="CM" />
+            <InputNumberUnit v-model="form.width" placeholder="宽" unit="CM" />
+            <InputNumberUnit v-model="form.height" placeholder="高" unit="CM" />
         </el-form-item>
         <!-- 铁艺 -->
         <el-form-item label="板材类型">
@@ -114,23 +106,16 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + express.v
         </el-form-item>
         <!-- 快递 -->
         <el-form-item label="发货地址">
-            <el-row :gutter="20" style="width: 100%;">
-                <el-col :span="8">
-                    <el-select v-model="form.province" placeholder="省份">
-                        <el-option v-for="c in pcaList" :label="c.name" :value="c.code"></el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="8">
-                    <el-select v-model="form.city" placeholder="请选择">
-                        <el-option v-for="c in cityList" :label="c.name" :value="c.code"></el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="8">
-                    <el-select v-model="form.area" v-show="showArea" placeholder="请选择">
-                        <el-option v-for="c in areaList" :label="c.name" :value="c.code"></el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
+            <el-select v-model="form.province" placeholder="省份" style="max-width: 160px; margin-right: 10px;">
+                <el-option v-for="c in pcaList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
+            <el-select v-model="form.city" placeholder="请选择" style="max-width: 160px; margin-right: 10px;">
+                <el-option v-for="c in cityList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
+            <el-select v-model="form.area" v-show="showArea" placeholder="请选择"
+                style="max-width: 160px; margin-right: 10px;">
+                <el-option v-for="c in areaList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
         </el-form-item>
         <!-- 纸箱 -->
         <el-form-item label="纸箱类型">
@@ -168,4 +153,8 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + express.v
     </el-form>
 </template>
 
-<style scoped></style>
+<style scoped>
+.product-single {
+    margin: auto;
+}
+</style>

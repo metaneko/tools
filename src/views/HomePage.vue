@@ -11,24 +11,34 @@ import {
     <el-container>
         <el-header>
             <el-menu mode="horizontal" class="el-menu-vertical" :ellipsis="false" default-active="1" router>
-                <el-menu-item index="0">
-                    <img style="width: 100px;" src="https://element-plus.org/images/element-plus-logo.svg"
-                        alt="Element logo" />
+                <el-menu-item index="0" route="/">
+                    <img style="width: 200px;" src="/logo.png" alt="Element logo" />
                 </el-menu-item>
                 <div class="flex-grow"></div>
-                <el-menu-item index="1" route="cost">
-                    <el-icon>
-                        <Iphone />
-                    </el-icon>
-                    <span>计算器</span>
-                </el-menu-item>
-                <el-menu-item index="2" route="single">
+                <el-sub-menu index="/caculator" route="/caculator">
+                    <template #title>
+                        <el-icon>
+                            <Iphone />
+                        </el-icon>
+                        <span>计算器</span>
+                    </template>
+                    <el-menu-item index="/caculator/cost">
+                        花箱成本 (组合)
+                    </el-menu-item>
+                    <el-menu-item index="/caculator/single">
+                        花箱成本 (单个)
+                    </el-menu-item>
+                    <el-menu-item index="/caculator/cargo">
+                        集装箱
+                    </el-menu-item>
+                </el-sub-menu>
+                <el-menu-item index="2" route="/price">
                     <el-icon>
                         <PriceTag />
                     </el-icon>
                     <template #title>价格管理</template>
                 </el-menu-item>
-                <el-menu-item index="3" route="cargo">
+                <el-menu-item index="3" route="/express">
                     <el-icon>
                         <Van />
                     </el-icon>

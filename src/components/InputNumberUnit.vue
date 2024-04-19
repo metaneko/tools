@@ -18,11 +18,17 @@ watch(() => inputText.value, () => {
 </script>
 
 <template>
-    <el-input v-model="inputText" :placeholder="placeholder" style="max-width: 160px;">
+    <el-input class="input" v-model="inputText" :placeholder="placeholder">
         <template #suffix v-if="unit">
             {{ unit }}
         </template>
     </el-input>
 </template>
 
-<style scoped></style>
+<style scoped>
+.input {
+    max-width: 160px;
+    min-width: 100px;
+    margin-right: 10px;
+}
+</style>

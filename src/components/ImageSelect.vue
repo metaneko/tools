@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Picture } from "@element-plus/icons-vue";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 interface ImageSelectItem {
     id: string;
@@ -9,37 +8,69 @@ interface ImageSelectItem {
 }
 
 interface ImageSelectProps {
-    width: string;
-    height: string;
     images: ImageSelectItem[];
 }
-defineProps<ImageSelectProps>();
+const props = defineProps<ImageSelectProps>();
 
 const model = defineModel<string>({ required: true });
-const selected = ref(model.value + "");
 
-watch(() => selected.value, () => model.value = selected.value);
+const icon = ref("");
+const name = ref("");
+
+onMounted(() => changeSelect())
+
+watch(() => model.value, changeSelect);
+
+function changeSelect() {
+    const selected = props.images.find(v => v.id == model.value)!;
+    icon.value = selected.icon;
+    name.value = selected.name;
+}
 
 </script>
 
 <template>
-    <el-radio-group v-model="selected">
-        <el-radio v-for="i in images" :key="i.id" :value="i.id" border>
-            <el-image :src="i.icon" :width="width" :height="height" fit="fill" :alt="i.name" class="image">
-                <template #error>
-                    <el-icon>
-                        <Picture />
-                    </el-icon>
+    <el-select v-model="model" placeholder="请选择规格" style="max-width: 160px;">
+        <el-option class="flex-center" v-for="i in images" :key="i.id" :label="i.name" :value="i.id">
+            <el-popover placement="bottom" :title="i.name" :width="240" trigger="hover">
+                <template #reference>
+                    <el-image class="image-small" :src="i.icon" :alt="i.name" fit="contain"></el-image>
                 </template>
-            </el-image>
-        </el-radio>
-    </el-radio-group>
+                <el-image class="image-big" :src="i.icon" :alt="i.name" fit="contain"></el-image>
+            </el-popover>
+            <span class="text">{{ i.name }}</span>
+        </el-option>
+        <template #prefix>
+            <el-popover placement="bottom" :title="name" :width="240" trigger="hover">
+                <template #reference>
+                    <el-image class="image-small" :src="icon" :alt="name" fit="contain"></el-image>
+                </template>
+                <el-image class="image-big" :src="icon" :alt="name" fit="contain"></el-image>
+            </el-popover>
+        </template>
+    </el-select>
 </template>
 
-<style scoped>
-.image {
+<style lang="scss" scoped>
+.image-small {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.image-big {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+}
+
+.text {
+    margin: 0 10px;
+}
+
+.flex-center {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
 }
 </style>

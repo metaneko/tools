@@ -65,14 +65,14 @@ const showArea = computed(() => city.value != "");
 <template>
     <div class="product-cost">
         <div class="header">
-            <span>请添加产品 ({{ tableData.length }})</span>
+            <span>已添加产品 ({{ tableData.length }}) 件</span>
             <el-space warp>
                 <el-button type="primary" @click="addItem">添加</el-button>
                 <el-button @click="caculateCost">调试</el-button>
                 <el-button type="danger">清空</el-button>
             </el-space>
         </div>
-        <el-scrollbar class="scrollbar" height="460px">
+        <el-scrollbar class="scrollbar">
             <el-collapse accordion v-model="activeName">
                 <el-collapse-item v-for="(item, index) in tableData" :name="index">
                     <template #title>
@@ -84,7 +84,7 @@ const showArea = computed(() => city.value != "");
                     </template>
                     <el-form label-width="auto" style="width: 100%">
                         <el-form-item label="产品款式">
-                            <ImageSelect v-model="item.product" :images="productList" width="200px" height="80px" />
+                            <ImageSelect v-model="item.product" :images="productList" width="32px" height="32px" />
                         </el-form-item>
                         <el-form-item label="定制尺寸">
                             <el-row :gutter="20">
@@ -133,23 +133,15 @@ const showArea = computed(() => city.value != "");
 
         <!-- 快递 -->
         <el-form-item label="发货地址">
-            <el-row :gutter="20">
-                <el-col :span="8">
-                    <el-select v-model="province" placeholder="省份" style="max-width: 160px;">
-                        <el-option v-for="c in pcaList" :label="c.name" :value="c.code"></el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="8">
-                    <el-select v-model="city" placeholder="请选择" style="max-width: 160px;">
-                        <el-option v-for="c in cityList" :label="c.name" :value="c.code"></el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="8">
-                    <el-select v-model="area" v-show="showArea" placeholder="请选择" style="max-width: 160px;">
-                        <el-option v-for="c in areaList" :label="c.name" :value="c.code"></el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
+            <el-select v-model="province" placeholder="省份" style="max-width: 160px; margin-right: 10px;">
+                <el-option v-for="c in pcaList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
+            <el-select v-model="city" placeholder="请选择" style="max-width: 160px; margin-right: 10px;">
+                <el-option v-for="c in cityList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
+            <el-select v-model="area" v-show="showArea" placeholder="请选择" style="max-width: 160px;">
+                <el-option v-for="c in areaList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
         </el-form-item>
     </div>
 
@@ -158,7 +150,11 @@ const showArea = computed(() => city.value != "");
 <style lang="scss" scoped>
 .product-cost {
     max-width: 720px;
+    height: 100%;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     .header {
         display: flex;
@@ -168,6 +164,7 @@ const showArea = computed(() => city.value != "");
 
     .scrollbar {
         margin: 12px 0;
+        flex-grow: 1;
 
         .title {
             width: 100vw;

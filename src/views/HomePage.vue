@@ -8,7 +8,7 @@ import {
 </script>
 
 <template>
-    <el-container>
+    <el-container class="home-page">
         <el-header>
             <el-menu mode="horizontal" class="el-menu-vertical" :ellipsis="false" default-active="1" router>
                 <el-menu-item index="0" route="/">
@@ -53,6 +53,10 @@ import {
 </template>
 
 <style lang="scss" scoped>
+.home-page {
+    height: 100vh;
+}
+
 .flex-grow {
     flex-grow: 1;
 }

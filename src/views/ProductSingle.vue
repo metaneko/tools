@@ -4,7 +4,7 @@ import InputNumberUnit from '../components/InputNumberUnit.vue';
 import { paintList } from '../data/paint';
 import { pcaList } from '../data/pca';
 import { IronArtItem, materialList, pipeTypeList, plateList, pipeList } from '../data/material';
-import { caculateCartonCost, caculateExpressPrice, caculateLogoPrice, getAreaList, getCityList } from '../helper/calculator';
+import { caculateCartonCost, caculateExpressPrice, caculateLogoPrice, getAreaList, getCityList, getRecomandExpress } from '../helper/calculator';
 
 const showDetail = ref(false);
 
@@ -60,6 +60,7 @@ const areaList = computed(() => getAreaList(form.province, form.city));
 
 const showArea = computed(() => form.city != "");
 const express = computed(() => caculateExpressPrice(volume.value, form.province, form.city, form.area));
+const recomand = computed(() => getRecomandExpress(express.value));
 
 // 纸箱
 const cartonCost = computed(() => caculateCartonCost(form));
@@ -67,7 +68,7 @@ const cartonCost = computed(() => caculateCartonCost(form));
 // logo
 const logoCost = computed(() => caculateLogoPrice(form.logoType, form.logoColor, form.logoSide));
 
-const totalCost = computed(() => ironArtCost.value + paintCost.value + express.value.recomand.price + cartonCost.value + logoCost.value);
+const totalCost = computed(() => ironArtCost.value + paintCost.value + recomand.value.price + cartonCost.value + logoCost.value);
 
 </script>
 
@@ -104,26 +105,6 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + express.v
                 <el-radio v-for="item in paintList" :value="item.id">{{ item.name }}</el-radio>
             </el-radio-group>
         </el-form-item>
-        <!-- 快递 -->
-        <el-form-item label="发货地址">
-            <el-select v-model="form.province" placeholder="省份" style="max-width: 160px; margin-right: 10px;">
-                <el-option v-for="c in pcaList" :label="c.name" :value="c.code"></el-option>
-            </el-select>
-            <el-select v-model="form.city" placeholder="请选择" style="max-width: 160px; margin-right: 10px;">
-                <el-option v-for="c in cityList" :label="c.name" :value="c.code"></el-option>
-            </el-select>
-            <el-select v-model="form.area" v-show="showArea" placeholder="请选择"
-                style="max-width: 160px; margin-right: 10px;">
-                <el-option v-for="c in areaList" :label="c.name" :value="c.code"></el-option>
-            </el-select>
-        </el-form-item>
-        <!-- 纸箱 -->
-        <el-form-item label="纸箱类型">
-            <el-radio-group v-model="form.carton">
-                <el-radio value="half">半盖</el-radio>
-                <el-radio value="full">全盖</el-radio>
-            </el-radio-group>
-        </el-form-item>
         <!-- Logo -->
         <el-form-item label="Logo">
             <el-radio-group v-model="form.logoType">
@@ -142,12 +123,25 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + express.v
                 <el-col :span="8"></el-col>
             </el-row>
         </el-form-item>
+        <!-- 快递 -->
+        <el-form-item label="发货地址">
+            <el-select v-model="form.province" placeholder="省份" style="max-width: 160px; margin-right: 10px;">
+                <el-option v-for="c in pcaList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
+            <el-select v-model="form.city" placeholder="请选择" style="max-width: 160px; margin-right: 10px;">
+                <el-option v-for="c in cityList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
+            <el-select v-model="form.area" v-show="showArea" placeholder="请选择"
+                style="max-width: 160px; margin-right: 10px;">
+                <el-option v-for="c in areaList" :label="c.name" :value="c.code"></el-option>
+            </el-select>
+        </el-form-item>
         <el-divider />
         <h3 @click="showDetail = !showDetail">建议零售价: {{ Math.round(totalCost / 0.6) }}, 最低价:
-            {{ Math.round(totalCost / 0.6 * 0.8)
-            }}</h3>
+            {{ Math.round(totalCost / 0.6 * 0.8) }}, {{ recomand.price > 0 ? '推荐物流：' + recomand.name : '未找到合适的快递' }}
+        </h3>
         <div v-show="showDetail">铁艺 ({{ ironArtCost.toFixed(2) }}) + 烤漆({{ paintCost.toFixed(2) }}) +
-            快递({{ express.recomand.name }}: {{ express.recomand.price }}) + 纸箱({{ cartonCost.toFixed(2) }}) + Logo({{
+            快递({{ recomand.name }}: {{ recomand.price }}) + 纸箱({{ cartonCost.toFixed(2) }}) + Logo({{
                 logoCost }}) =
             {{ totalCost.toFixed(2) }}</div>
     </el-form>

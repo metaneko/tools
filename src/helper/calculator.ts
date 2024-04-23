@@ -1,4 +1,4 @@
-import { ExpressMap } from "../data/express";
+import { expressGate, expressMap } from "../data/express";
 import { IronArtItem, materialList, pipeList, pipeTypeList, plateList } from "../data/material";
 import { paintList } from "../data/paint";
 import { pcaList } from "../data/pca";
@@ -18,6 +18,11 @@ export interface ProductParamItem {
     amount: number;
 }
 
+export interface ExpressItem {
+    id: string;
+    name: string;
+    price: number;
+}
 
 export function findMaterial(type: string, list: IronArtItem[]) {
     const item = list.find(i => i.id == type)!;
@@ -118,16 +123,16 @@ export function caculateExpressPrice(volume: number, province: string, city: str
     let yimi = 0;
     let deppon = 0;
 
-    if (ExpressMap.has(province)) {
-        const p = ExpressMap.get(province)!;
+    if (expressMap.has(province)) {
+        const p = expressMap.get(province)!;
         sf = p["sf"] * volume;
         jd = p["jd"] * volume;
         best = p["best"] * volume;
         yimi = p["yimi"] * volume;
         deppon = p["deppon"] * volume;
 
-        if (ExpressMap.has(city)) {
-            const c = ExpressMap.get(city)!;
+        if (expressMap.has(city)) {
+            const c = expressMap.get(city)!;
             if (c["best"] > 0) {
                 best = c["best"] * volume;
             }
@@ -136,8 +141,8 @@ export function caculateExpressPrice(volume: number, province: string, city: str
             }
         }
 
-        if (ExpressMap.has(area)) {
-            const a = ExpressMap.get(area)!;
+        if (expressMap.has(area)) {
+            const a = expressMap.get(area)!;
             if (a["best"] > 0) {
                 best = a["best"] * volume;
             }
@@ -148,21 +153,23 @@ export function caculateExpressPrice(volume: number, province: string, city: str
         }
     }
 
-    const list = [
+    const list: ExpressItem[] = [
         { id: "sf", name: "顺丰", price: sf },
-        { id: "jd", name: "京东", price: max(jd) },
-        { id: "best", name: "百世", price: max(best) },
-        { id: "yimi", name: "一米", price: max(yimi) },
-        { id: "deppon", name: "德邦", price: max(deppon) },
+        { id: "jd", name: "京东", price: jd },
+        { id: "best", name: "百世", price: best },
+        { id: "yimi", name: "一米", price: yimi },
+        { id: "deppon", name: "德邦", price: deppon },
     ];
 
-    const recomand = list.filter((e) => e.price > 0).sort((a, b) => a.price - b.price)[0];
-
-    return { recomand, list };
+    return list;
 }
 
-export function max(input: number) {
-    return input > 0 ? Math.max(input, 90) : 0
+export function getRecomandExpress(list: ExpressItem[]) {
+    const formatList = list.map((item) => {
+        item.price = Math.max(item.price, expressGate[item.id])
+        return item;
+    }).sort((a, b) => a.price - b.price);
+    return formatList.length > 0 ? formatList[0] : { id: "error", name: "", price: 0 };
 }
 
 export function caculateLogoPrice(type: string, color: number, side: number) {

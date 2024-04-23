@@ -1,4 +1,4 @@
-const ExpressOrigin = `代码,名称,顺丰,京东,百世,一米,德邦
+const expressOrigin = `代码,名称,顺丰,京东,百世,一米,德邦
 35,福建,110,100,110,120,110
 44,广东,135,135,135,140,135
 31,上海,135,135,140,140,135
@@ -58,4 +58,12 @@ export function parseExpress(origin: string) {
     return map;
 }
 
-export const ExpressMap = parseExpress(ExpressOrigin);
+export const expressMap = parseExpress(expressOrigin);
+
+export const expressGate: Record<string, number> = {
+    sf: 0,
+    jd: 90,
+    best: 90,
+    yimi: 90,
+    deppon: 90
+}

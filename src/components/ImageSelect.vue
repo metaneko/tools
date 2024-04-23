@@ -32,7 +32,7 @@ function changeSelect() {
 <template>
     <el-select v-model="model" placeholder="请选择规格" style="max-width: 160px;">
         <el-option class="flex-center" v-for="i in images" :key="i.id" :label="i.name" :value="i.id">
-            <el-popover placement="bottom" :title="i.name" :width="240" trigger="hover">
+            <el-popover placement="bottom" :title="i.name" :width="240" trigger="hover" :show-after="500">
                 <template #reference>
                     <el-image class="image-small" :src="i.icon" :alt="i.name" fit="contain"></el-image>
                 </template>
@@ -41,7 +41,7 @@ function changeSelect() {
             <span class="text">{{ i.name }}</span>
         </el-option>
         <template #prefix>
-            <el-popover placement="bottom" :title="name" :width="240" trigger="hover">
+            <el-popover placement="bottom" :title="name" :width="240" trigger="hover" :show-after="500">
                 <template #reference>
                     <el-image class="image-small" :src="icon" :alt="name" fit="contain"></el-image>
                 </template>

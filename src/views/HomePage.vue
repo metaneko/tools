@@ -11,7 +11,7 @@ import {
     <el-container class="home-page">
         <el-header>
             <el-menu mode="horizontal" class="el-menu-vertical" :ellipsis="false" default-active="1" router>
-                <el-menu-item index="0" route="/">
+                <el-menu-item class="logo" index="0" route="/">
                     <img style="width: 200px;" src="/logo.png" alt="Element logo" />
                 </el-menu-item>
                 <div class="flex-grow"></div>
@@ -55,6 +55,27 @@ import {
 <style lang="scss" scoped>
 .home-page {
     height: 100vh;
+    background-color: aliceblue;
+}
+
+.el-header {
+    background-color: white;
+}
+
+.el-main {
+    width: 720px;
+    margin: auto;
+    background-color: white;
+}
+
+@media only screen and (max-width: 720px) {
+    .logo {
+        display: none;
+    }
+
+    .el-main {
+        width: 100%;
+    }
 }
 
 .flex-grow {

@@ -7,6 +7,7 @@ import { productList } from "../data/product";
 
 export interface ProductParamItem {
     product: string;
+    count: number;
     length: number;
     width: number;
     height: number;
@@ -16,6 +17,18 @@ export interface ProductParamItem {
     pipeSpec: string;
     paint: string;
     amount: number;
+}
+
+export interface ResultTableItem {
+    name: string;
+    ironArt: number;
+    plate: number;
+    pipe: number;
+    paint: number;
+    carton: number;
+    count: number;
+    total: number;
+    express: ExpressItem[]
 }
 
 export interface ExpressItem {
@@ -116,7 +129,8 @@ export function getAreaList(province: string, city: string) {
 }
 
 // 计算 快递价格
-export function caculateExpressPrice(volume: number, province: string, city: string, area: string) {
+export function caculateExpressPrice(item: ProductParamItem, province: string, city: string, area: string) {
+    const volume = caculateVolume(item);
     let sf = 0;
     let jd = 0;
     let best = 0;
@@ -154,11 +168,11 @@ export function caculateExpressPrice(volume: number, province: string, city: str
     }
 
     const list: ExpressItem[] = [
-        { id: "sf", name: "顺丰", price: sf },
-        { id: "jd", name: "京东", price: jd },
-        { id: "best", name: "百世", price: best },
-        { id: "yimi", name: "一米", price: yimi },
-        { id: "deppon", name: "德邦", price: deppon },
+        { id: "sf", name: "顺丰", price: sf * item.count },
+        { id: "jd", name: "京东", price: jd * item.count },
+        { id: "best", name: "百世", price: best * item.count },
+        { id: "yimi", name: "一米", price: yimi * item.count },
+        { id: "deppon", name: "德邦", price: deppon * item.count },
     ];
 
     return list;

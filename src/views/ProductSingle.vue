@@ -10,6 +10,7 @@ const showDetail = ref(false);
 
 const form = reactive({
     product: "1",
+    count: 1,
     length: 100,
     width: 30,
     height: 60,
@@ -28,15 +29,13 @@ const form = reactive({
     logoSide: 1
 });
 
-const volume = computed(() => form.length * form.width * form.height / 1e6)
-
 // 铁艺
 const plateMaterial = computed(() => findMaterial(form.plateType, plateList));
 const plateArea = computed(() => form.length * form.width / 1e4 + form.length * form.height / 1e4 * 2 + form.width * form.height / 1e4 * 2);
 
 const pipeMaterial = computed(() => findMaterial(form.pipeType, pipeTypeList));
 const squirePipeSpec = computed(() => pipeList.find((item) => item.id == form.pipeSpec)!);
-const pipeLen = computed(() => (form.length + form.width + form.height) * 4 / 100 - (squirePipeSpec.value.length + squirePipeSpec.value.width) / 2 * 16 / 1000);
+const pipeLen = computed(() => (form.length + form.width + form.height) * 4 / 100);
 
 const plateWeight = computed(() => plateArea.value * form.plateThick * plateMaterial.value.density);
 const pipeWeight = computed(() => squirePipeSpec.value.thick * (squirePipeSpec.value.length - squirePipeSpec.value.thick) * pipeMaterial.value.density * pipeLen.value / 1000 * 4);
@@ -59,7 +58,7 @@ const cityList = computed(() => getCityList(form.province));
 const areaList = computed(() => getAreaList(form.province, form.city));
 
 const showArea = computed(() => form.city != "");
-const express = computed(() => caculateExpressPrice(volume.value, form.province, form.city, form.area));
+const express = computed(() => caculateExpressPrice(form, form.province, form.city, form.area));
 const recomand = computed(() => getRecomandExpress(express.value));
 
 // 纸箱
@@ -73,7 +72,7 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + recomand.
 </script>
 
 <template>
-    <el-form class="product-single" label-width="auto" style="max-width: 720px;">
+    <el-form class="product-single" label-width="auto">
         <el-form-item label="定制尺寸">
             <InputNumberUnit v-model="form.length" placeholder="长" unit="CM" />
             <InputNumberUnit v-model="form.width" placeholder="宽" unit="CM" />
@@ -137,7 +136,7 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + recomand.
             </el-select>
         </el-form-item>
         <el-divider />
-        <h3 @click="showDetail = !showDetail">建议零售价: {{ Math.round(totalCost / 0.6) }}, 最低价:
+        <h3 @click="showDetail = !showDetail">建议报价: {{ Math.round(totalCost / 0.6) }}, 最低报价:
             {{ Math.round(totalCost / 0.6 * 0.8) }}, {{ recomand.price > 0 ? '推荐物流：' + recomand.name : '未找到合适的快递' }}
         </h3>
         <div v-show="showDetail">铁艺 ({{ ironArtCost.toFixed(2) }}) + 烤漆({{ paintCost.toFixed(2) }}) +
@@ -147,8 +146,4 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + recomand.
     </el-form>
 </template>
 
-<style scoped>
-.product-single {
-    margin: auto;
-}
-</style>
+<style scoped></style>

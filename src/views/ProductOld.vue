@@ -11,31 +11,31 @@ const showDetail = ref(false);
 const form = reactive({
     product: "1",
     count: 1,
-    length: 100,
-    width: 30,
-    height: 60,
+    x: 100,
+    y: 30,
+    z: 60,
+    extX: 0,
+    extY: 0,
+    extZ: 0,
     plateType: "1",
     plateThick: 0.6,
     pipeType: "1",
     pipeSpec: "18",
-    amount: 1,
     paint: "1",
     province: "35",
     city: "",
     area: "",
     carton: "half",
     logoType: "paint",
-    logoColor: 1,
-    logoSide: 1
 });
 
 // 铁艺
 const plateMaterial = computed(() => findMaterial(form.plateType, plateList));
-const plateArea = computed(() => form.length * form.width / 1e4 + form.length * form.height / 1e4 * 2 + form.width * form.height / 1e4 * 2);
+const plateArea = computed(() => form.x * form.y / 1e4 + form.x * form.z / 1e4 * 2 + form.y * form.z / 1e4 * 2);
 
 const pipeMaterial = computed(() => findMaterial(form.pipeType, pipeTypeList));
 const squirePipeSpec = computed(() => pipeList.find((item) => item.id == form.pipeSpec)!);
-const pipeLen = computed(() => (form.length + form.width + form.height) * 4 / 100);
+const pipeLen = computed(() => (form.x + form.y + form.z) * 4 / 100);
 
 const plateWeight = computed(() => plateArea.value * form.plateThick * plateMaterial.value.density);
 const pipeWeight = computed(() => squirePipeSpec.value.thick * (squirePipeSpec.value.length - squirePipeSpec.value.thick) * pipeMaterial.value.density * pipeLen.value / 1000 * 4);
@@ -65,7 +65,7 @@ const recomand = computed(() => getRecomandExpress(express.value));
 const cartonCost = computed(() => caculateCartonCost(form));
 
 // logo
-const logoCost = computed(() => caculateLogoPrice(form.logoType, form.logoColor, form.logoSide));
+const logoCost = computed(() => caculateLogoPrice(form.logoType, 1));
 
 const totalCost = computed(() => ironArtCost.value + paintCost.value + recomand.value.price + cartonCost.value + logoCost.value);
 
@@ -74,9 +74,9 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + recomand.
 <template>
     <el-form class="product-single" label-width="auto">
         <el-form-item label="定制尺寸">
-            <InputNumberUnit v-model="form.length" placeholder="长" unit="CM" />
-            <InputNumberUnit v-model="form.width" placeholder="宽" unit="CM" />
-            <InputNumberUnit v-model="form.height" placeholder="高" unit="CM" />
+            <InputNumberUnit v-model="form.x" placeholder="长" unit="CM" />
+            <InputNumberUnit v-model="form.y" placeholder="宽" unit="CM" />
+            <InputNumberUnit v-model="form.z" placeholder="高" unit="CM" />
         </el-form-item>
         <!-- 铁艺 -->
         <el-form-item label="板材类型">
@@ -107,20 +107,12 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value + recomand.
         <!-- Logo -->
         <el-form-item label="Logo">
             <el-radio-group v-model="form.logoType">
+                <el-radio value="none">无</el-radio>
                 <el-radio value="paint">喷漆</el-radio>
-                <el-radio value="silk">丝印</el-radio>
+                <el-radio value="silk1">单色丝印</el-radio>
+                <el-radio value="silk2">双色丝印</el-radio>
+                <el-radio value="silk3">三色丝印</el-radio>
             </el-radio-group>
-        </el-form-item>
-        <el-form-item v-show="form.logoType == 'silk'" label="颜色面数">
-            <el-row :gutter="20" justify="space-between" style="width: 100%;">
-                <el-col :span="8">
-                    <InputNumberUnit v-model="form.logoColor" placeholder="颜色" unit="色" />
-                </el-col>
-                <el-col :span="8">
-                    <InputNumberUnit v-model="form.logoSide" placeholder="面数" unit="面" />
-                </el-col>
-                <el-col :span="8"></el-col>
-            </el-row>
         </el-form-item>
         <!-- 快递 -->
         <el-form-item label="发货地址">

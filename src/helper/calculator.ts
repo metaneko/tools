@@ -1,3 +1,4 @@
+import { parser } from "mathjs";
 import { expressGate, expressMap } from "../data/express";
 import { IronArtItem, materialList, pipeList, pipeTypeList, plateList } from "../data/material";
 import { paintList } from "../data/paint";
@@ -8,15 +9,17 @@ import { productList } from "../data/product";
 export interface ProductParamItem {
     product: string;
     count: number;
-    length: number;
-    width: number;
-    height: number;
+    x: number;
+    y: number;
+    z: number;
+    extX: number;
+    extY: number;
+    extZ: number;
     plateType: string;
     plateThick: number;
     pipeType: string;
     pipeSpec: string;
     paint: string;
-    amount: number;
 }
 
 export interface ResultTableItem {
@@ -24,6 +27,7 @@ export interface ResultTableItem {
     ironArt: number;
     plate: number;
     pipe: number;
+    wood: number;
     paint: number;
     carton: number;
     count: number;
@@ -43,24 +47,28 @@ export function findMaterial(type: string, list: IronArtItem[]) {
 }
 
 export function caculateVolume(item: ProductParamItem) {
-    return item.length * item.width * item.height / 1e6;
+    return item.x * item.y * item.z / 1e6;
 }
 
 export function caculatePlateArea(item: ProductParamItem) {
+    /*
     if (item.product == "1") {
-        return item.length * item.width / 1e4 + item.length * item.height / 1e4 * 2 + item.width * item.height / 1e4 * 2
+        return item.x * item.y / 1e4 + item.x * item.z / 1e4 * 2 + item.y * item.z / 1e4 * 2
     }
 
-    return 0;
+    if (item.product == "3") {
+        return item.x * item.y / 1e4 + item.x * item.z / 1e4 * 2 + item.x * item.extZ / 1e4 + (item.y * item.z - item.extY * (item.z - item.extZ)) / 1e4 * 2;
+    }
+    */
+    const product = productList.find((p) => p.id == item.product)!;
+
+    return caculateExpression(item, product.plate);
 }
 
 export function caculatePlateWeight(item: ProductParamItem) {
     const area = caculatePlateArea(item);
     const material = findMaterial(item.plateType, plateList);
-    if (item.product == "1") {
-        return area * item.plateThick * material.density;
-    }
-    return 0;
+    return area * item.plateThick * material.density;
 }
 
 export function caculatePlateCost(item: ProductParamItem) {
@@ -70,27 +78,30 @@ export function caculatePlateCost(item: ProductParamItem) {
 }
 
 export function caculatePipeLength(item: ProductParamItem) {
-    if (item.product == "1") {
-        return (item.length + item.width + item.height) * 4 / 100
-    }
-
-    return 0;
+    const product = productList.find(p => p.id == item.product)!;
+    return caculateExpression(item, product.pipe)
 }
 
 export function caculatePipeWeight(item: ProductParamItem) {
     const length = caculatePipeLength(item);
     const material = findMaterial(item.pipeType, pipeTypeList);
     const spec = pipeList.find((p) => p.id == item.pipeSpec)!;
-    if (item.product == "1") {
-        return spec.thick * (spec.length - spec.thick) * material.density * length / 1000 * 4;
-    }
-    return 0;
+    return spec.thick * (spec.length - spec.thick) * material.density * length / 1000 * 4;
 }
 
 export function caculatePipeCost(item: ProductParamItem) {
     const weight = caculatePipeWeight(item);
     const material = findMaterial(item.pipeType, pipeTypeList);
     return weight * material.price;
+}
+
+export function caculateWoodCost(item: ProductParamItem) {
+    const wood = priceList.find((p) => p.id == "wood")!;
+    if (item.product == "3") {
+        return Math.ceil(item.x / 5) * item.extY / 100 * wood.price;
+    }
+
+    return 0
 }
 
 export function caculatePaintCost(item: ProductParamItem) {
@@ -103,11 +114,11 @@ export function caculateCartonSize(item: ProductParamItem) {
     const product = productList.find(p => p.id == item.product)!;
 
     if (product.carton == "half") {
-        return (item.length / 100 + item.width / 100 + 0.05) * (item.width / 100 + item.height / 100 + 0.03) * 2;
+        return (item.x / 100 + item.y / 100 + 0.05) * (item.y / 100 + item.z / 100 + 0.03) * 2;
     }
 
     if (product.carton == "full") {
-        return (item.length / 100 + item.width / 100 + 0.05) * (item.width / 100 * 2 + item.height / 100 + 0.03) * 2;
+        return (item.x / 100 + item.y / 100 + 0.05) * (item.y / 100 * 2 + item.z / 100 + 0.03) * 2;
     }
 
     return 0;
@@ -115,7 +126,7 @@ export function caculateCartonSize(item: ProductParamItem) {
 
 export function caculateCartonCost(item: ProductParamItem) {
     const size = caculateCartonSize(item);
-    const carton = priceList.find(p => p.id == "carto")!;
+    const carton = priceList.find(p => p.id == "carton")!;
     return size * carton.price;
 }
 
@@ -186,14 +197,34 @@ export function getRecomandExpress(list: ExpressItem[]) {
     return formatList.length > 0 ? formatList[0] : { id: "error", name: "", price: 0 };
 }
 
-export function caculateLogoPrice(type: string, color: number, side: number) {
+export function caculateLogoPrice(type: string, count: number) {
     if (type == "paint") {
-        return 15;
+        return 15 * count;
     }
 
-    if (type == "silk") {
-        return 70 + (color + side) * 3;
+    if (type == "silk1") {
+        return 70 + count * 3;
+    }
+
+    if (type == "silk2") {
+        return 70 + count * 6;
+    }
+
+    if (type == "silk3") {
+        return 70 + count * 9;
     }
 
     return 0;
+}
+
+function caculateExpression(item: ProductParamItem, expression: string) {
+    const p = parser();
+    p.evaluate(`A1 = ${item.x / 100}`);
+    p.evaluate(`B1 = ${item.y / 100}`);
+    p.evaluate(`C1 = ${item.z / 100}`);
+    p.evaluate(`A2 = ${item.extX / 100}`);
+    p.evaluate(`B2 = ${item.extY / 100}`);
+    p.evaluate(`C2 = ${item.extZ / 100}`);
+
+    return p.evaluate(expression);
 }

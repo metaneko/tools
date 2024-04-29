@@ -143,14 +143,14 @@ function formatNumber(row: any, col: TableColumnCtx<ResultTableItem>) {
                                 style="margin-left: 10px;" />
                         </el-form-item>
                         <el-form-item label="定制尺寸">
-                            <InputNumberUnit v-model="item.x" placeholder="长" unit="CM" />
-                            <InputNumberUnit v-model="item.y" placeholder="宽" unit="CM" />
-                            <InputNumberUnit v-model="item.z" placeholder="高" unit="CM" />
+                            <InputNumberUnit v-model="item.x" placeholder="长" code="A1" unit="CM" />
+                            <InputNumberUnit v-model="item.y" placeholder="宽" code="B1" unit="CM" />
+                            <InputNumberUnit v-model="item.z" placeholder="高" code="C1" unit="CM" />
                         </el-form-item>
                         <el-form-item v-if="item.product == '3'" label="额外尺寸">
-                            <InputNumberUnit v-model="item.extX" placeholder="长" unit="CM" />
-                            <InputNumberUnit v-model="item.extY" placeholder="宽" unit="CM" />
-                            <InputNumberUnit v-model="item.extZ" placeholder="高" unit="CM" />
+                            <InputNumberUnit v-model="item.extX" placeholder="长" code="A2" unit="CM" />
+                            <InputNumberUnit v-model="item.extY" placeholder="宽" code="B2" unit="CM" />
+                            <InputNumberUnit v-model="item.extZ" placeholder="高" code="C2" unit="CM" />
                         </el-form-item>
                         <!-- 铁艺 -->
                         <el-form-item label="板材类型">
@@ -238,15 +238,24 @@ function formatNumber(row: any, col: TableColumnCtx<ResultTableItem>) {
         </div>
         <h4>报价</h4>
         <div>
-            建议报价：{{ ((totalCost + expressRecommand.price + 15) / 0.6).toFixed(2) }}，
-            最低报价：{{ ((totalCost + expressRecommand.price + 15) / 0.6 * 0.8).toFixed(2) }}，
+            建议报价：{{ ((totalCost + logoCost + expressRecommand.price) / 0.6).toFixed(2) }}，
+            最低报价：{{ ((totalCost + logoCost + expressRecommand.price) / 0.6 * 0.8).toFixed(2) }}，
             推荐物流：{{ expressRecommand.name }} ({{ expressRecommand.price.toFixed(2) }})
         </div>
     </div>
-
 </template>
 
 <style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
 .caculator {
     height: 100%;
     display: flex;

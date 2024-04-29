@@ -22,10 +22,10 @@ import {
                         </el-icon>
                         <span>计算器</span>
                     </template>
-                    <el-menu-item index="/caculator/cost">
+                    <el-menu-item index="/caculator/flowerbox">
                         花箱成本
                     </el-menu-item>
-                    <el-menu-item index="/caculator/single">
+                    <el-menu-item index="/caculator/old">
                         花箱成本 (旧)
                     </el-menu-item>
                     <el-menu-item index="/caculator/cargo">

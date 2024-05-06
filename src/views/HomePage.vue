@@ -25,6 +25,9 @@ import {
                     <el-menu-item index="/caculator/flowerbox">
                         花箱成本
                     </el-menu-item>
+                    <el-menu-item index="/caculator/irregular">
+                        不规则花箱
+                    </el-menu-item>
                     <el-menu-item index="/caculator/old">
                         花箱成本 (旧)
                     </el-menu-item>

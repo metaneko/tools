@@ -17,7 +17,6 @@ const tableData: TableItem[] = [
 
 <template>
     <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="code" label="代码" width="180" />
         <el-table-column prop="name" label="名称" width="180" />
         <el-table-column prop="sf" label="顺丰" />
         <el-table-column prop="jd" label="京东" />

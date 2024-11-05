@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import InputNumberUnit from '../components/InputNumberUnit.vue';
-import { paintList } from '../data/paint';
+import { commonPaintList } from '../data/paint';
 import { IronArtItem, materialList, pipeTypeList, plateList, pipeList } from '../data/material';
 
 const showDetail = ref(false);
@@ -51,7 +51,7 @@ function findMaterial(type: string, list: IronArtItem[]) {
 }
 
 // 烤漆
-const paintSelected = computed(() => paintList.find((v) => v.id == form.paint)!);
+const paintSelected = computed(() => commonPaintList.find((v) => v.id == form.paint)!);
 const paintCost = computed(() => paintSelected.value.price * totalWeight.value);
 
 const totalCost = computed(() => ironArtCost.value + paintCost.value);
@@ -89,14 +89,14 @@ const totalCost = computed(() => ironArtCost.value + paintCost.value);
         <!-- 烤漆 -->
         <el-form-item label="烤漆颜色">
             <el-radio-group v-model="form.paint">
-                <el-radio v-for="item in paintList" :value="item.id">{{ item.name }}</el-radio>
+                <el-radio v-for="item in commonPaintList" :value="item.id">{{ item.name }}</el-radio>
             </el-radio-group>
         </el-form-item>
         <el-divider />
         <h3 @click="showDetail = !showDetail">铁艺成本: {{ Math.round(totalCost) }}
         </h3>
         <div v-show="showDetail">铁板 ({{ plateCost.toFixed(2) }}) + 铁管 ({{ pipeCost.toFixed(2) }}) + 烤漆({{
-                paintCost.toFixed(2) }}) =
+            paintCost.toFixed(2) }}) =
             {{ totalCost.toFixed(2) }}</div>
     </el-form>
 </template>

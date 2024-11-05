@@ -7,7 +7,7 @@ import { Ref, computed, onMounted, ref, watch } from 'vue';
 import ImageSelect from '../components/ImageSelect.vue';
 import InputNumberUnit from '../components/InputNumberUnit.vue';
 import { productList } from '../data/product';
-import { paintList } from '../data/paint';
+import { commonPaintList, paintTypeList, pantonePaintList } from '../data/paint';
 import { pcaList } from '../data/pca';
 import { pipeTypeList, plateList, pipeList } from '../data/material';
 import { ExpressItem, ProductParamItem, ResultTableItem, caculateCartonCost, caculateLogoPrice, caculatePaintCost, caculatePipeCost, caculatePlateCost, caculateWoodCost, getAreaList, getCityList, getRecomandExpress } from '../helper/calculator';
@@ -66,7 +66,9 @@ function addInitItem() {
         plateThick: 0.6,
         pipeType: "1",
         pipeSpec: "18",
-        paint: "1",
+        paintType: "1",
+        commonPaint: "1",
+        pantonePaint: "1",
     })
 }
 
@@ -173,9 +175,19 @@ function formatNumber(row: any, col: TableColumnCtx<ResultTableItem>) {
                             </el-select>
                         </el-form-item>
                         <!-- 烤漆 -->
-                        <el-form-item label="烤漆颜色">
-                            <el-radio-group v-model="item.paint">
-                                <el-radio v-for="item in paintList" :value="item.id">{{ item.name }}</el-radio>
+                        <el-form-item label="烤漆类型">
+                            <el-radio-group v-model="item.paintType">
+                                <el-radio v-for="item in paintTypeList" :value="item.id">{{ item.name }}</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="普通烤漆" v-show="item.paintType == '1'">
+                            <el-radio-group v-model="item.commonPaint">
+                                <el-radio v-for="item in commonPaintList" :value="item.id">{{ item.name }}</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="潘通烤漆" v-show="item.paintType == '2'">
+                            <el-radio-group v-model="item.pantonePaint">
+                                <el-radio v-for="item in pantonePaintList" :value="item.id">{{ item.name }}</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-form>

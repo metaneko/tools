@@ -1,7 +1,7 @@
 import { parser } from "mathjs";
 import { expressGate, expressMap } from "../data/express";
 import { IronArtItem, materialList, pipeList, pipeTypeList, plateList } from "../data/material";
-import { paintList } from "../data/paint";
+import { commonPaintList, paintTypeList, pantonePaintList } from "../data/paint";
 import { pcaList } from "../data/pca";
 import { priceList } from "../data/price";
 import { productList } from "../data/product";
@@ -19,7 +19,9 @@ export interface ProductParamItem {
     plateThick: number;
     pipeType: string;
     pipeSpec: string;
-    paint: string;
+    paintType: string;
+    commonPaint: string;
+    pantonePaint: string;
 }
 
 export interface ResultTableItem {
@@ -105,9 +107,37 @@ export function caculateWoodCost(item: ProductParamItem) {
 }
 
 export function caculatePaintCost(item: ProductParamItem) {
-    const paint = paintList.find((p) => p.id == item.paint)!;
-    const weight = caculatePlateWeight(item) + caculatePipeWeight(item);
-    return weight * paint.price;
+    const paintType = paintTypeList.find((p) => p.id == item.paintType)!;
+    if (paintType.id == "1") {
+        const commonPaint = commonPaintList.find((p) => p.id == item.commonPaint)!;
+        const weight = caculatePlateWeight(item) + caculatePipeWeight(item);
+        return weight * commonPaint.price;
+    }
+
+    if (paintType.id == "2") {
+        const pantonePaint = pantonePaintList.find((p) => p.id == item.pantonePaint)!;
+        const weight = caculatePlateWeight(item) + caculatePipeWeight(item);
+        if (pantonePaint.id == "1") {
+            return Math.max(weight * pantonePaint.price, 100);
+        }
+        if (pantonePaint.id == "2") {
+            return Math.max(weight * pantonePaint.price, 50);
+        }
+
+        return weight * pantonePaint.price
+    }
+
+    if (paintType.id == "3") {
+        const weight = caculatePlateWeight(item) + caculatePipeWeight(item);
+        return Math.max(weight * paintType.price, 50);
+    }
+
+    if (paintType.id == "4") {
+        const area = item.x * item.z / 1e4 * 2 + item.y * item.z / 1e4 * 2;
+        return area * paintType.price;
+    }
+
+    return 0
 }
 
 export function caculateCartonSize(item: ProductParamItem) {

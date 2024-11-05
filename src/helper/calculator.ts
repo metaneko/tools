@@ -118,10 +118,10 @@ export function caculatePaintCost(item: ProductParamItem) {
         const pantonePaint = pantonePaintList.find((p) => p.id == item.pantonePaint)!;
         const weight = caculatePlateWeight(item) + caculatePipeWeight(item);
         if (pantonePaint.id == "1") {
-            return Math.max(weight * pantonePaint.price, 100);
+            return weight * pantonePaint.price;
         }
         if (pantonePaint.id == "2") {
-            return Math.max(weight * pantonePaint.price, 50);
+            return weight * pantonePaint.price;
         }
 
         return weight * pantonePaint.price
@@ -129,7 +129,7 @@ export function caculatePaintCost(item: ProductParamItem) {
 
     if (paintType.id == "3") {
         const weight = caculatePlateWeight(item) + caculatePipeWeight(item);
-        return Math.max(weight * paintType.price, 50);
+        return weight * paintType.price;
     }
 
     if (paintType.id == "4") {
